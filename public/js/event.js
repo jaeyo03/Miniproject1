@@ -66,8 +66,9 @@ const event = () => {
     } else if (e.target.matches("#contents")) {
       if (e.key === "Spacebar" || e.key === " ") {
         const newRange = document.getSelection();
+        const focusNode = newRange.focusNode;
 
-        if (newRange.focusNode.textContent.startsWith("#")) {
+        if (focusNode.textContent.startsWith("#")) {
           e.preventDefault();
           const header = [...e.target.querySelectorAll("div")].find(
             (c) =>
@@ -86,18 +87,23 @@ const event = () => {
           newRange.collapse(newHeader, 0);
         }
 
-        const content = [...e.target.querySelectorAll("div")].find((c) =>
-          c.innerText.startsWith("/페이지")
-        );
-        if (content) {
+        if (focusNode.textContent === "/페이지") {
           e.preventDefault();
+          const parent = focusNode.parentNode;
+
           const newPage = document.createElement("div");
-          newPage.style.height = "24px";
-          content.setAttribute("class", "dropdown");
-          content.innerHTML = "";
-          content.appendChild(newPage);
-          content.innerHTML += createDropDown();
-          newRange.collapse(newPage, 0);
+          const title = document.createElement("div");
+          title.style.height = "24px";
+          newPage.appendChild(title);
+          newPage.setAttribute("class", "dropdown");
+          newPage.innerHTML += createDropDown();
+
+          parent.replaceChild(newPage, focusNode);
+
+          const newRange = document.createRange();
+          newRange.selectNodeContents(title);
+          newRange.collapse(false);
+          title.focus();
         }
       }
     }
@@ -124,7 +130,7 @@ const event = () => {
     if (contents) {
       contents.forEach((content) => {
         let prev = content.textContent; // blur 이벤트 전 텍스트 데이터
-        handleBlockquote(content, prev);
+        // handleBlockquote(content, prev);
       });
     }
   });
