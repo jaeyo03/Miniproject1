@@ -67,29 +67,30 @@ const event = () => {
       if (e.key === "Spacebar" || e.key === " ") {
         const newRange = document.getSelection();
         const focusNode = newRange.focusNode;
+        const parent = focusNode.parentNode;
+        const text = focusNode.textContent.trim();
 
         if (focusNode.textContent.startsWith("#")) {
-          e.preventDefault();
-          const header = [...e.target.querySelectorAll("div")].find(
-            (c) =>
-              c.innerText === "#" ||
-              c.innerText === "##" ||
-              c.innerText === "###"
-          );
+          if (text === "#" || text === "##" || text === "###") {
+            e.preventDefault();
 
-          const newHeader = document.createElement(
-            `h${header.innerText.length}`
-          );
-          newHeader.style.height = "100%";
-          newHeader.style.padding = "5px 0 10px 0";
-          newHeader.innerHTML = "";
-          header.parentNode.replaceChild(newHeader, header);
-          newRange.collapse(newHeader, 0);
+            const newHeader = document.createElement(
+              `h${focusNode.textContent.length}`
+            );
+            newHeader.style.height = "100%";
+            newHeader.style.padding = "5px 0 10px 0";
+            newHeader.innerHTML = "";
+
+            parent.replaceChild(newHeader, focusNode);
+
+            const newRange = document.createRange();
+            newRange.selectNodeContents(newHeader);
+            newRange.collapse(false);
+          }
         }
 
         if (focusNode.textContent === "/페이지") {
           e.preventDefault();
-          const parent = focusNode.parentNode;
 
           const newPage = document.createElement("div");
           const title = document.createElement("div");
@@ -103,7 +104,6 @@ const event = () => {
           const newRange = document.createRange();
           newRange.selectNodeContents(title);
           newRange.collapse(false);
-          title.focus();
         }
       }
     }
@@ -252,12 +252,10 @@ function selectPage(id = "", text = "") {
   if (continer) continer.remove();
 
   if (dropdown) {
-    // dropdown.style.height = "40px";
     dropdown.removeAttribute("class");
   }
 
   if (id.length > 0) {
-    console.log(id, text);
     const nextDiv = document.createElement("section");
     nextDiv.style.height = "24px";
     dropdown.innerHTML = "";
