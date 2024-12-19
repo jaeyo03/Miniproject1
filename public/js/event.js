@@ -105,6 +105,32 @@ const event = () => {
           newRange.selectNodeContents(title);
           newRange.collapse(false);
         }
+        
+        if (newRange.focusNode.textContent.startsWith("/")) {
+          e.preventDefault();
+          const header = [...e.target.querySelectorAll("div")].find(
+            (c) =>
+              c.innerText === "/ul" || 
+              c.innerText === "/ol"
+          );
+          let newHeader = (header.innerText === "/ul" ? document.createElement('ul') : document.createElement('ol'));
+          const liElement = document.createElement('li');
+          liElement.setAttribute("contenteditable", "true");
+          newHeader.appendChild(liElement);
+          header.parentNode.replaceChild(newHeader, header);
+          newRange.collapse(newHeader, 0);
+        }
+        if (newRange.focusNode.textContent.startsWith("-")) {
+          e.preventDefault();
+          const header = [...e.target.querySelectorAll("div")].find(
+            (c) =>
+              c.innerText === "---"
+          );
+          let newHeader = document.createElement('hr');
+          header.parentNode.replaceChild(newHeader, header);
+          newHeader.parentNode.appendChild(document.createElement('div'));
+          newRange.collapse(newHeader.nextSibling, 0);
+        }
       }
     }
   });
