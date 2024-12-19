@@ -30,7 +30,7 @@ async function body(data) {
   });
 
   let post_main = `
-  <div class="m-3 mt-5 ps-5 pe-5" style="overflow-y: auto; height: 100%;"  >
+  <div class="m-3 mt-5 ps-5 pe-5" style="overflow-y: auto; height: calc(100dvh - 120px);"  >
       <!-- 제목 -->
       <div class="mb-3">
         <blockquote id="title" class="h2 p-1 fw-semibold" contenteditable="true">${

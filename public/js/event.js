@@ -130,7 +130,7 @@ const event = () => {
     if (contents) {
       contents.forEach((content) => {
         let prev = content.textContent; // blur 이벤트 전 텍스트 데이터
-        // handleBlockquote(content, prev);
+        handleBlockquote(content, prev);
       });
     }
   });
@@ -167,14 +167,14 @@ function navCollapse() {
   }
   navExpand = document.getElementById("nav-expand");
   navExpand.classList.remove("hide");
-  navExpand.disable=false;
+  navExpand.disable = false;
 }
 function navExpand() {
   const navi = document.getElementById("navi");
   navi.classList.remove("slidedown");
   const navExpand = document.getElementById("nav-expand");
   navExpand.classList.add("hide");
-  navExpand.disable=true;
+  navExpand.disable = true;
 }
 
 function changeTitle(e) {
