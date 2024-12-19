@@ -201,6 +201,7 @@ function multipleDelete() {
     })
   })
 }
+
 function confirmDelete() {
   const deleteBoxes = document.querySelectorAll('.delete-icon');
   const deleteIds = [];
@@ -215,14 +216,18 @@ function confirmDelete() {
   deleteIds.forEach((id) => {
     axiosArr.push(axiosInstance.delete(`documents/${id}`));
   })
+
   Promise.all(axiosArr)
     .then((results) => {
-      console.log(results); // all 은 배열 형태로 온다
+      console.log(results); // all 은 배열 형태로 결과가 온다
+      const lastResult = results[results.length-1];
+      navigater(`${lastResult.parent ? '/app/'+lastResult.parent.id : "/"}`);
     })
     .catch((error) => {
       console.log(error)
     })
 }
+
 function handleBlockquote(content, prev) {
   // blur 이벤트 리스너를 한번만 등록하도록
   if (!content.dataset.observed) {
