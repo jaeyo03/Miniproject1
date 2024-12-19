@@ -30,27 +30,30 @@ function renderMenuList(id, list) {
     items += `<li onclick="navigater('/app/${e.id}');"
      class="item-container btn btn-outline-light overflow-x-hidden overflow-y-hidden text-black d-block rounded border-0 text-start d-flex justify-content-between pe-1" style="height: 30px;">
       <div>
+        <span id =${e.id + 'doc'} class="delete-icon" style="display: none">
+          <i class="bi bi-square" style="color: #5f5e5b; width: 14px; font-size: small;"></i>
+        </span>
         <span type="button" id="collapse" data-bs-toggle="collapse" data-bs-target='#collapse${
-          e.id
-        }' aria-controls='collapse${e.id}' onclick="event.stopPropagation();">
+      e.id
+    }' aria-controls='collapse${e.id}' onclick="event.stopPropagation();">
           <i class="fa-regular fa-note-sticky" style="color: #5f5e5b;"></i>
           ${
-            child.length > 0
-              ? `<i class="fa-solid fa-chevron-down" style="color: #5f5e5b; width: 14px; font-size: small;"></i>`
-              : `<i class="fa-regular fa-note-sticky" style="color: #5f5e5b;"></i>`
-          }
+      child.length > 0
+        ? `<i class="fa-solid fa-chevron-down" style="color: #5f5e5b; width: 14px; font-size: small;"></i>`
+        : `<i class="fa-regular fa-note-sticky" style="color: #5f5e5b;"></i>`
+    }
         </span>
         <span id="${e.id}" class="nav-item-title">${e.title}</span>
       </div>
       <div class="d-flex document-control-btn">
         <button class="btn btn-outline-light d-block rounded border-0 py-0 px-1" onclick="event.stopPropagation(); deleteNote(${
-          e.id
-        })" style="font-size: small;">
+      e.id
+    })" style="font-size: small;">
           <i class="fa-regular fa-trash-can" style="color: #5f5e5b;"></i>
         </button>
         <button class="btn btn-outline-light d-block rounded border-0 py-0 px-1" onclick="event.stopPropagation(); addNewNote(${
-          e.id
-        })" style="font-size: small;">
+      e.id
+    })" style="font-size: small;">
           <i class="fa-solid fa-plus" style="color: #5f5e5b;"></i>
         </button>
       </div>
@@ -65,7 +68,7 @@ function renderMenuList(id, list) {
 
 async function render(path, query) {
   const response = await axiosInstance.get("/documents");
-  
+
   const header = `<div class="position-relative h-100">
         <div class="d-flex justify-content-between align-items-start w-100">
           <div class="w-80 link-body-emphasis text-decoration-none" onclick="navigater('/');" style="cursor:pointer;">
@@ -76,7 +79,13 @@ async function render(path, query) {
           </button>
         </div>
         <hr>
-        <ul class="list-unstyled ps-0" >`;
+        <div style="position: relative;">
+          <button id="confirm-delete" type="button" class="btn btn-primary" style="display: none">Confirm</button>
+        </div>
+        <button id="multiple-delete" class="btn text-black d-block rounded border-0 bottom-0 py-2">
+          <i class="bi bi-trash2" style="pointer-events:none"></i>
+        </button>
+        <ul id="unordered-list" class="list-unstyled ps-0" >`;
   const end = `
       </ul>
       <button id="write" class="btn text-black d-block rounded border-0 position-absolute bottom-0 w-100 py-2">
@@ -84,7 +93,7 @@ async function render(path, query) {
       </button>
     </div>
   `;
-  
+
   if (response.status !== 200) {
     return header + end;
   }
