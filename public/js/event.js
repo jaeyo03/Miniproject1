@@ -104,14 +104,14 @@ const event = () => {
   });
   window.addEventListener("keydown", (e) => {
     let editor = document.activeElement;
-    if (e.key == 'Tab' && editor.tagName == 'BLOCKQUOTE'){
+    if (e.key == "Tab" && editor.tagName == "BLOCKQUOTE") {
       let tabNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0");
       let doc = editor.ownerDocument.defaultView;
       let sel = doc.getSelection();
       let range = sel.getRangeAt(0);
       range.insertNode(tabNode);
       range.setStartAfter(tabNode);
-      range.setEndAfter(tabNode); 
+      range.setEndAfter(tabNode);
       sel.removeAllRanges();
       sel.addRange(range);
       e.preventDefault();
@@ -238,21 +238,22 @@ function updateDropDown(keyword) {
   continer.innerHTML = items;
 }
 
-function selectPage(id = 0, text = "") {
+function selectPage(id = "", text = "") {
   const newRange = document.getSelection();
   const dropdown = document.querySelector(".dropdown");
   const continer = document.querySelector(".dropdown-menu");
-  const nextDiv = document.createElement("div");
-  nextDiv.style.height = "24px";
 
   if (continer) continer.remove();
 
   if (dropdown) {
-    dropdown.style.height = "40px";
-    dropdown.setAttribute("class", null);
+    // dropdown.style.height = "40px";
+    dropdown.removeAttribute("class");
   }
 
-  if (id) {
+  if (id.length > 0) {
+    console.log(id, text);
+    const nextDiv = document.createElement("section");
+    nextDiv.style.height = "24px";
     dropdown.innerHTML = "";
     dropdown.innerHTML = `<button id=${document.id} contenteditable="false" class="item-container btn btn-outline-light w-100 d-flex gap-2 align-items-center" onclick="navigater('/app/${id}');">
       <i class="fa-regular fa-note-sticky" style="pointer-events:none;"></i>
