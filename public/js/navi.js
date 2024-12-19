@@ -29,7 +29,7 @@ function renderMenuList(id, list) {
 
     items += `<li onclick="navigater('/app/${e.id}');"
      class="item-container btn btn-outline-light overflow-x-hidden overflow-y-hidden text-black d-block rounded border-0 text-start d-flex justify-content-between pe-1" style="height: 30px;">
-      <div>
+      <div class="d-flex align-items-center">
         <span id =${e.id + 'doc'} class="delete-icon" style="display: none">
           <i class="bi bi-square" style="color: #5f5e5b; width: 14px; font-size: small;"></i>
         </span>
