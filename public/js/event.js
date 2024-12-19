@@ -1,6 +1,8 @@
 // event.js
 import axiosInstance from "./axiosInstance.js";
 
+let setEventCount = 0; // 중복 리스너 등록 막기
+
 const event = () => {
   window.addEventListener("click", (e) => {
     if (e.target.matches("#write") || e.target.matches("#write1")) {
@@ -17,6 +19,27 @@ const event = () => {
       console.log(e.target);
       e.stopPropagation();
       selectPage(e.target.id, e.target.innerText);
+    } else if (e.target.matches("#multiple-delete")) {
+      const ul = document.getElementById("unordered-list");
+      if (ul.classList.contains("delete-ready")) {
+        ul.classList.remove("delete-ready");
+      } else {
+        ul.classList.add("delete-ready");
+      }
+
+      const confirmButton = document.getElementById("confirm-delete")
+      if (confirmButton.style.display === "none") {
+        confirmButton.style.display = "block";
+      } else {
+        confirmButton.style.display = "none";
+      }
+      console.log(setEventCount);
+      if (setEventCount < 1) {
+        multipleDelete();
+        setEventCount += 1;
+      }
+    } else if (e.target.matches("#confirm-delete")) {
+      confirmDelete();
     }
   });
 
@@ -162,6 +185,49 @@ const event = () => {
   });
   writeObserver.observe(document.body, { childList: true, subtree: true });
 };
+
+function multipleDelete() {
+  const deleteBoxes = document.querySelectorAll('.delete-icon');
+  deleteBoxes.forEach((element) => {
+    element.addEventListener("click", (e) => {
+      const icon = element.querySelector('i')
+      e.stopPropagation();
+      if(icon.classList.contains("bi-square")) {
+        icon.classList.remove("bi-square");
+        icon.classList.add("bi-check-square-fill")
+      } else {
+        icon.classList.add("bi-square");
+        icon.classList.remove("bi-check-square-fill");
+      }
+      console.log(element.id)
+    })
+  })
+}
+
+function confirmDelete() {
+  const deleteBoxes = document.querySelectorAll('.delete-icon');
+  const deleteIds = [];
+  deleteBoxes.forEach((element) => {
+    const icon = element.querySelector('i')
+    if (icon.classList.contains("bi-check-square-fill")) {
+      deleteIds.push(element.id.slice(0,6));
+    }
+  })
+  const axiosArr = [];
+
+  // 이렇게 delete 요청 자체를 넣어야함
+  deleteIds.forEach((id) => {
+    axiosArr.push(axiosInstance.delete(`documents/${id}`));
+  })
+
+  Promise.all(axiosArr)
+    .then((results) => {
+      console.log(results); // all 은 배열 형태로 온다
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
 
 function handleBlockquote(content, prev) {
   // blur 이벤트 리스너를 한번만 등록하도록
