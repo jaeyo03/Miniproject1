@@ -35,24 +35,3 @@ button#write{
 }
 #nav-expand{transition: all .3s ease-in-out;}
 #nav-expand.hide{opacity: 0; cursor:default;}
-
-.delete-ready > li #collapse {
-  display: none;
-}
-
-.delete-ready > li .delete-icon {
-  display: block !important;
-  pointer-events: auto;
-}
-
-.delete-ready > li {
-  pointer-events: none;
-}
-
-#confirm-delete {
-  display: block;
-  margin-left: 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
