@@ -231,7 +231,7 @@ function createDropDown() {
   const allTitles = document.querySelectorAll(".nav-item-title");
   const items = getDropDown(allTitles);
 
-  return `<ul class="dropdown-menu show overflow-y-scroll" style="height: 100px" contenteditable="false">${items}</ul>`;
+  return `<ul class="dropdown-menu show overflow-y-scroll" style="max-height: 100px" contenteditable="false">${items}</ul>`;
 }
 
 function updateDropDown(keyword) {
