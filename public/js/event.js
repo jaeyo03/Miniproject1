@@ -66,52 +66,58 @@ const event = () => {
     } else if (e.target.matches("#contents")) {
       if (e.key === "Spacebar" || e.key === " ") {
         const newRange = document.getSelection();
+        const focusNode = newRange.focusNode;
+        const parent = focusNode.parentNode;
+        const text = focusNode.textContent.trim();
 
-        if (newRange.focusNode.textContent.startsWith("#")) {
-          e.preventDefault();
-          const header = [...e.target.querySelectorAll("div")].find(
-            (c) =>
-              c.innerText === "#" ||
-              c.innerText === "##" ||
-              c.innerText === "###"
-          );
+        if (focusNode.textContent.startsWith("#")) {
+          if (text === "#" || text === "##" || text === "###") {
+            e.preventDefault();
 
-          const newHeader = document.createElement(
-            `h${header.innerText.length}`
-          );
-          newHeader.style.height = "100%";
-          newHeader.style.padding = "5px 0 10px 0";
-          newHeader.innerHTML = "";
-          header.parentNode.replaceChild(newHeader, header);
-          newRange.collapse(newHeader, 0);
+            const newHeader = document.createElement(
+              `h${focusNode.textContent.length}`
+            );
+            newHeader.style.height = "100%";
+            newHeader.style.padding = "5px 0 10px 0";
+            newHeader.innerHTML = "";
+
+            parent.replaceChild(newHeader, focusNode);
+
+            const newRange = document.createRange();
+            newRange.selectNodeContents(newHeader);
+            newRange.collapse(false);
+          }
         }
 
-        const content = [...e.target.querySelectorAll("div")].find((c) =>
-          c.innerText.startsWith("/페이지")
-        );
-        if (content) {
+        if (focusNode.textContent === "/페이지") {
           e.preventDefault();
+
           const newPage = document.createElement("div");
-          newPage.style.height = "24px";
-          content.setAttribute("class", "dropdown");
-          content.innerHTML = "";
-          content.appendChild(newPage);
-          content.innerHTML += createDropDown();
-          newRange.collapse(newPage, 0);
+          const title = document.createElement("div");
+          title.style.height = "24px";
+          newPage.appendChild(title);
+          newPage.setAttribute("class", "dropdown");
+          newPage.innerHTML += createDropDown();
+
+          parent.replaceChild(newPage, focusNode);
+
+          const newRange = document.createRange();
+          newRange.selectNodeContents(title);
+          newRange.collapse(false);
         }
       }
     }
   });
   window.addEventListener("keydown", (e) => {
     let editor = document.activeElement;
-    if (e.key == 'Tab' && editor.tagName == 'BLOCKQUOTE'){
+    if (e.key == "Tab" && editor.tagName == "BLOCKQUOTE") {
       let tabNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0");
       let doc = editor.ownerDocument.defaultView;
       let sel = doc.getSelection();
       let range = sel.getRangeAt(0);
       range.insertNode(tabNode);
       range.setStartAfter(tabNode);
-      range.setEndAfter(tabNode); 
+      range.setEndAfter(tabNode);
       sel.removeAllRanges();
       sel.addRange(range);
       e.preventDefault();
@@ -161,14 +167,14 @@ function navCollapse() {
   }
   navExpand = document.getElementById("nav-expand");
   navExpand.classList.remove("hide");
-  navExpand.disable=false;
+  navExpand.disable = false;
 }
 function navExpand() {
   const navi = document.getElementById("navi");
   navi.classList.remove("slidedown");
   const navExpand = document.getElementById("nav-expand");
   navExpand.classList.add("hide");
-  navExpand.disable=true;
+  navExpand.disable = true;
 }
 
 function changeTitle(e) {
@@ -225,7 +231,7 @@ function createDropDown() {
   const allTitles = document.querySelectorAll(".nav-item-title");
   const items = getDropDown(allTitles);
 
-  return `<ul class="dropdown-menu show overflow-y-scroll" style="height: 100px" contenteditable="false">${items}</ul>`;
+  return `<ul class="dropdown-menu show overflow-y-scroll" style="max-height: 100px" contenteditable="false">${items}</ul>`;
 }
 
 function updateDropDown(keyword) {
@@ -238,21 +244,20 @@ function updateDropDown(keyword) {
   continer.innerHTML = items;
 }
 
-function selectPage(id = 0, text = "") {
+function selectPage(id = "", text = "") {
   const newRange = document.getSelection();
   const dropdown = document.querySelector(".dropdown");
   const continer = document.querySelector(".dropdown-menu");
-  const nextDiv = document.createElement("div");
-  nextDiv.style.height = "24px";
 
   if (continer) continer.remove();
 
   if (dropdown) {
-    dropdown.style.height = "40px";
-    dropdown.setAttribute("class", null);
+    dropdown.removeAttribute("class");
   }
 
-  if (id) {
+  if (id.length > 0) {
+    const nextDiv = document.createElement("section");
+    nextDiv.style.height = "24px";
     dropdown.innerHTML = "";
     dropdown.innerHTML = `<button id=${document.id} contenteditable="false" class="item-container btn btn-outline-light w-100 d-flex gap-2 align-items-center" onclick="navigater('/app/${id}');">
       <i class="fa-regular fa-note-sticky" style="pointer-events:none;"></i>
